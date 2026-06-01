@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controlador de Pedidos — Famat</title>
+    <meta name="description" content="Panel de empleado para gestionar pedidos de Famat">
+    <meta name="theme-color" content="#1a2332">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="icons/icon-192.svg">
+    <link rel="apple-touch-icon" href="icons/icon-192.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar__logo">
+            <span class="logo-icon">📦</span>
+            <div>
+                <div class="logo-title">Famat</div>
+                <div class="logo-sub">Panel de Empleado</div>
+            </div>
+        </div>
+
+        <nav class="sidebar__nav">
+            <button class="nav-btn active" data-filtro="todos" onclick="filtrar('todos', this)">
+                <span class="nav-icon">🗂️</span> Todos
+                <span class="nav-badge" id="badge-todos">0</span>
+            </button>
+            <button class="nav-btn" data-filtro="pendiente" onclick="filtrar('pendiente', this)">
+                <span class="nav-icon">🕐</span> Pendientes
+                <span class="nav-badge nav-badge--rojo" id="badge-pendiente">0</span>
+            </button>
+            <button class="nav-btn" data-filtro="en_preparacion" onclick="filtrar('en_preparacion', this)">
+                <span class="nav-icon">⚙️</span> En preparación
+                <span class="nav-badge nav-badge--amarillo" id="badge-en_preparacion">0</span>
+            </button>
+            <button class="nav-btn" data-filtro="listo" onclick="filtrar('listo', this)">
+                <span class="nav-icon">✅</span> Listos
+                <span class="nav-badge nav-badge--verde" id="badge-listo">0</span>
+            </button>
+            <button class="nav-btn" data-filtro="entregado" onclick="filtrar('entregado', this)">
+                <span class="nav-icon">🚚</span> Entregados
+                <span class="nav-badge nav-badge--gris" id="badge-entregado">0</span>
+            </button>
+        </nav>
+
+        <div class="sidebar__footer">
+            <div id="estadoSync" class="estado-sync estado-sync--aviso">Conectando con Supabase...</div>
+            <button type="button" class="btn-sync" onclick="sincronizarDesdeSupabase()">🔄 Actualizar pedidos</button>
+            <div class="info-empleado">✓ Sesión activa como empleado</div>
+        </div>
+    </aside>
+
+    <main class="main">
+        <header class="topbar">
+            <div class="topbar__titulo" id="tituloFiltro">Todos los pedidos</div>
+            <div class="topbar__acciones">
+                <input type="text" id="buscador" class="buscador" placeholder="🔍 Buscar por cliente...">
+                <button class="btn-limpiar-entregados" onclick="limpiarEntregados()" title="Eliminar pedidos entregados">🗑️ Limpiar entregados</button>
+            </div>
+        </header>
+
+        <div id="listaCards" class="lista-cards"></div>
+    </main>
+
+    <!-- Modal detalle -->
+    <div id="modal" class="modal" onclick="cerrarModal(event)">
+        <div class="modal__caja">
+            <button class="modal__cerrar" onclick="document.getElementById('modal').classList.remove('modal--visible')">✕</button>
+            <div id="modal__contenido"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-famat.js"></script>
+    <script src="script.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function () {
+                navigator.serviceWorker.register('./sw.js').catch(function (err) {
+                    console.warn('Service worker no registrado:', err);
+                });
+            });
+        }
+    </script>
+</body>
+</html>
